@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kniff – AI sotto controllo</title>
+<meta name="robots" content="noindex, nofollow"><!-- bozza: togliere quando si vuole farsi trovare su Google -->
+<meta name="description" content="Kniff: strumenti digitali e intelligenza artificiale semplici per studi, artigiani, aziende e servizi pubblici. I tuoi dati restano sotto il tuo controllo.">
+<style>
+:root{
+  --bg:#f4f6f8; --ink:#1f252b; --muted:#5d6873; --card:#ffffff; --line:#dde3e9;
+  --accent:#3a6f94; --accent-ink:#ffffff; --soft:#e8edf2; --dark:#1f2933;
+  --green:#3f7d4e; --green-soft:#e8f0e4; --blue:#4b5f73; --blue-soft:#e6ebf0;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#14181c; --ink:#e8edf2; --muted:#98a3ad; --card:#1c2228; --line:#2d363e;
+        --accent:#7fb3d9; --accent-ink:#0d1013; --soft:#1c2228; --dark:#0d1013;
+        --green:#6fb584; --green-soft:#1c2a22; --blue:#9fb0c2; --blue-soft:#1b232b;}
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+a{color:var(--accent)}
+header{position:sticky;top:0;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);z-index:10}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{font-weight:800;font-size:1.35rem;letter-spacing:-.02em;color:var(--ink);text-decoration:none}
+.logo span{color:var(--accent)}
+.logo small{font-weight:500;font-size:.8rem;color:var(--muted);letter-spacing:0}
+nav a{margin-left:20px;color:var(--muted);text-decoration:none;font-size:.95rem}
+nav a:hover{color:var(--ink)}
+@media(max-width:640px){nav a{display:none}.logo small{display:none}}
+.btn{display:inline-block;background:var(--accent);color:var(--accent-ink)!important;padding:12px 22px;border-radius:10px;font-weight:600;text-decoration:none;border:0;font:inherit;font-weight:600;cursor:pointer}
+
+/* ---------- HERO + CHAT ---------- */
+.hero{padding:60px 0 56px}
+.eyebrow{color:var(--accent);font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:.8rem}
+h1{font-size:clamp(2rem,5vw,3.2rem);line-height:1.1;letter-spacing:-.025em;margin:12px 0 10px;max-width:16em}
+.lead{font-size:1.1rem;color:var(--muted);max-width:34em;margin:0 0 26px}
+.chat{background:var(--card);border:1.5px solid var(--line);border-radius:20px;box-shadow:0 10px 40px rgba(20,40,60,.10);max-width:720px;overflow:hidden}
+.chat:focus-within{border-color:var(--accent)}
+.log{padding:18px 18px 4px;max-height:150px;overflow-y:auto;transition:max-height .6s ease}
+.chat.open .log{max-height:min(58vh,460px)}
+.msg{max-width:85%;padding:10px 14px;border-radius:16px;margin:0 0 10px;animation:in .25s ease}
+.msg.bot{background:var(--soft);border-bottom-left-radius:4px}
+.msg.me{background:var(--accent);color:var(--accent-ink);margin-left:auto;border-bottom-right-radius:4px}
+.msg.sum{max-width:100%}
+.msg.sum ul{margin:6px 0 10px;padding-left:20px}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.chips{display:flex;flex-wrap:wrap;gap:8px;padding:0 18px 12px}
+.chip{background:transparent;border:1.5px solid var(--accent);color:var(--accent);border-radius:999px;padding:7px 14px;font:inherit;font-size:.93rem;cursor:pointer}
+.chip:hover{background:var(--accent);color:var(--accent-ink)}
+.bar{display:flex;align-items:center;gap:8px;padding:12px;border-top:1px solid var(--line)}
+.bar input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:inherit;font-size:1.05rem;padding:10px 8px;outline:none}
+.mic,.send{flex:none;border:0;border-radius:50%;cursor:pointer;display:grid;place-items:center}
+.mic{width:56px;height:56px;background:var(--accent);color:var(--accent-ink);box-shadow:0 0 0 0 rgba(58,111,148,.5)}
+.mic.on{animation:pulse 1.2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 16px rgba(58,111,148,0)}100%{box-shadow:0 0 0 0 rgba(58,111,148,0)}}
+.send{width:44px;height:44px;background:var(--soft);color:var(--ink)}
+.chat svg{width:26px;height:26px}
+.send svg{width:20px;height:20px}
+.mic-note{font-size:.78rem;color:var(--muted);padding:0 18px 10px;margin:0}
+
+/* ---------- SEZIONI ---------- */
+section{padding:56px 0}
+h2{font-size:clamp(1.5rem,3.2vw,2.1rem);letter-spacing:-.02em;line-height:1.2;margin:0 0 8px}
+.sub{color:var(--muted);max-width:38em;margin:0 0 28px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+.card h3{margin:0 0 4px;font-size:1.05rem}
+.card p{margin:0;color:var(--muted);font-size:.95rem}
+.ic{width:40px;height:40px;margin-bottom:10px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+
+#servizi{background:var(--green-soft)}
+#servizi h2,#servizi .ic{color:var(--green)}
+#servizi .card{border-top:4px solid var(--green)}
+
+.risk{background:var(--dark);color:#eef2f6;border-radius:18px;padding:34px;display:grid;gap:26px;grid-template-columns:1fr}
+@media(min-width:820px){.risk{grid-template-columns:1.6fr 1fr;align-items:center}}
+.risk h2{color:#fff}.risk .sub{color:#aab4bd;margin-bottom:18px}
+.risk-grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.risk-item{background:rgba(255,255,255,.06);border-left:3px solid #e5604d;border-radius:10px;padding:12px 14px}
+.risk-item b{color:#ff9a8a;display:block}
+.risk-item p{margin:2px 0 0;font-size:.9rem;color:#cfd6dd}
+.shield{width:100%;max-width:230px;margin:auto;display:block}
+.compare{width:100%;border-collapse:collapse;margin-top:16px;font-size:.92rem}
+.compare th,.compare td{text-align:left;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.14)}
+.compare th{color:#aab4bd;font-weight:600;font-size:.8rem}
+.compare td:nth-child(2){color:#ff9a8a}
+.compare td:nth-child(3),.compare th:nth-child(3){color:#9fd8b4;font-weight:600}
+.note{font-size:.8rem;color:#98a3ad;margin:14px 0 0}
+
+#metodo{background:var(--blue-soft)}
+#metodo h2{color:var(--blue)}
+.steps{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));counter-reset:s}
+.step{counter-increment:s;display:flex;gap:12px;align-items:flex-start}
+.step::before{content:counter(s);flex:none;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--blue);color:#fff;font-weight:700}
+.step b{display:block}.step span{color:var(--muted);font-size:.95rem}
+
+.who{display:flex;flex-wrap:wrap;gap:8px}
+.who span{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:.93rem}
+.about{display:grid;gap:24px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));align-items:start}
+.kniff-def{border-left:4px solid var(--accent);padding:4px 0 4px 16px;color:var(--muted)}
+.kniff-def b{color:var(--ink)}
+.alt{background:var(--soft)}
+footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:.88rem}
+footer .wrap{display:flex;flex-wrap:wrap;gap:10px 30px;justify-content:space-between}
+/* offerta */
+#offerta{background:var(--bg)}
+.offer{display:grid;gap:22px;grid-template-columns:1fr;align-items:stretch}
+@media(min-width:860px){.offer{grid-template-columns:1.25fr 1fr}}
+.points{display:grid;gap:12px;margin-top:20px}
+.point{display:flex;gap:12px;align-items:flex-start}
+.point::before{content:"✓";flex:none;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:.85rem;font-weight:700;margin-top:2px}
+.point b{display:block}.point span{color:var(--muted);font-size:.95rem}
+.deal{background:var(--accent);color:var(--accent-ink);border-radius:18px;padding:28px;display:flex;flex-direction:column;justify-content:center;gap:10px}
+.deal .tag{align-self:flex-start;background:rgba(255,255,255,.18);border-radius:999px;padding:4px 12px;font-size:.8rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.deal .big{font-size:2.4rem;font-weight:800;line-height:1;letter-spacing:-.02em}
+.deal p{margin:0;opacity:.92}
+.deal .btn{background:var(--accent-ink);color:var(--accent)!important;align-self:flex-start;margin-top:6px}
+.todo{background:#fff3c4;color:#5a4500;padding:0 4px;border-radius:3px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="logo" href="#">Kniff<span>.</span> <small>AI sotto controllo</small></a>
+    <nav><a href="#servizi">Servizi</a><a href="#offerta">Offerta</a><a href="#dati">Dati</a><a href="#metodo">Metodo</a><a href="#contatti">Contatti</a></nav>
+  </div>
+</header>
+
+<main>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Kniff · AI sotto controllo</div>
+    <h1>La dritta giusta per semplificarti il lavoro.</h1>
+    <p class="lead">Dicci cosa ti pesa. Ti facciamo poche domande e capiamo da dove partire. <a href="#offerta" style="white-space:nowrap">Consulenza −50% per le PMI fino a fine anno →</a></p>
+
+    <div class="chat" id="chat">
+      <div class="log" id="log" aria-live="polite">
+        <div class="msg bot">Ciao! Cosa ti pesa di più nel lavoro? Scrivilo o dillo a voce.</div>
+      </div>
+      <div class="chips" id="chips">
+        <button class="chip">Troppe carte</button>
+        <button class="chip">Troppe mail</button>
+        <button class="chip">Perdo tempo in cose ripetitive</button>
+        <button class="chip">Non so da dove iniziare con l'AI</button>
+      </div>
+      <form class="bar" id="form" autocomplete="off">
+        <button type="button" class="mic" id="mic" aria-label="Parla">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></svg>
+        </button>
+        <input id="inp" type="text" placeholder="Scrivi qui, oppure premi il microfono" aria-label="Il tuo messaggio">
+        <button class="send" aria-label="Invia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </form>
+      <p class="mic-note" id="micnote">Il microfono usa il riconoscimento vocale del tuo browser. Se preferisci, scrivi.</p>
+    </div>
+  </div>
+</section>
+
+<section id="servizi">
+  <div class="wrap">
+    <h2>Cosa togliamo dalla scrivania</h2>
+    <p class="sub">Partiamo da quello che ti fa perdere tempo ogni giorno.</p>
+    <div class="grid">
+      <div class="card"><svg class="ic" viewBox="0 0 24 24"><path d="M6 2h8l5 5v15H6z"/><path d="M14 2v5h5M9 13h7M9 17h7"/></svg><h3>Documenti</h3><p>Fatture, contratti, pratiche: i dati utili si estraggono da soli.</p></div>
+      <div class="card"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><h3>Mail e bozze</h3><p>Risposte e preventivi pronti da rivedere, nel tuo stile.</p></div>
+      <div class="card"><svg class="ic" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></svg><h3>Voce in testo</h3><p>Riunioni e sopralluoghi trascritti e riassunti.</p></div>
+      <div class="card"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg><h3>Riassunti e traduzioni</h3><p>Testi lunghi ridotti all'essenziale, in più lingue.</p></div>
+      <div class="card"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg><h3>Automazioni</h3><p>Le ripetizioni settimanali partono da sole.</p></div>
+      <div class="card"><svg class="ic" viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2.5 9 2.5 12 0v-5"/></svg><h3>Formazione</h3><p>Mezza giornata per usare bene l'AI nel tuo mestiere.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="offerta">
+  <div class="wrap offer">
+    <div>
+      <h2>Semplificare costa meno di quanto pensi</h2>
+      <p class="sub" style="margin-bottom:0">Con l'AI una soluzione efficace si costruisce in poco tempo. Per togliere peso a un'attività in azienda non servono progetti onerosi: servono la dritta giusta e un budget contenuto, usato bene.</p>
+      <div class="points">
+        <div class="point"><div><b>Budget contenuti, valore pieno</b><span>Soluzioni semplici, pensate bene. Non svendiamo il lavoro: lo rendiamo accessibile.</span></div></div>
+        <div class="point"><div><b>Risultati in poco tempo</b><span>Settimane, a volte giorni, non mesi.</span></div></div>
+        <div class="point"><div><b>Alcuni progetti si chiudono durante la consulenza</b><span>I più semplici li risolviamo nel tempo che passiamo insieme.</span></div></div>
+      </div>
+    </div>
+    <div class="deal">
+      <span class="tag">Per le PMI · fino a fine anno</span>
+      <div class="big">−50%</div>
+      <p><b>Consulenza di valutazione, riservata alle piccole e medie imprese.</b> Capiamo insieme cosa si può semplificare e, se ha senso, partiamo.</p>
+      <p>Provaci. Non te ne pentirai.</p>
+      <a class="btn js-form" href="#" target="_blank" rel="noopener">Prenota la consulenza</a>
+    </div>
+  </div>
+</section>
+
+<section id="dati">
+  <div class="wrap">
+    <div class="risk">
+      <div>
+        <h2>Sai dove vanno i tuoi dati?</h2>
+        <p class="sub">Molte AI elaborano ciò che carichi su server di altri, spesso fuori dall'UE. Se dentro ci sono dati di clienti o dipendenti, il rischio è tuo. Quando serve, si può far girare tutto in locale.</p>
+        <div class="risk-grid">
+          <div class="risk-item"><b>GDPR</b><p>Sanzioni fino a 20 milioni di euro o 4% del fatturato.</p></div>
+          <div class="risk-item"><b>Segreto professionale</b><p>Non si sposta con un copia-incolla.</p></div>
+          <div class="risk-item"><b>AI Act UE</b><p>Chi usa l'AI in azienda deve saperla usare.</p></div>
+          <div class="risk-item"><b>Segreti aziendali</b><p>Ciò che esce non rientra più.</p></div>
+        </div>
+        <table class="compare">
+          <thead><tr><th></th><th>AI in cloud</th><th>AI in locale</th></tr></thead>
+          <tbody>
+            <tr><td>I dati</td><td>Dal fornitore</td><td>Restano da te</td></tr>
+            <tr><td>Senza internet</td><td>Non va</td><td>Va</td></tr>
+            <tr><td>Controllo</td><td>Del fornitore</td><td>Tuo</td></tr>
+          </tbody>
+        </table>
+        <p class="note">Informazione generale, non consulenza legale. La soluzione giusta dipende dal tuo caso: la scegliamo insieme.</p>
+      </div>
+      <svg class="shield" viewBox="0 0 200 240" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M100 12 28 40v60c0 55 34 100 72 124 38-24 72-69 72-124V40z" stroke="#9fd8b4" stroke-width="5" fill="rgba(159,216,180,.10)"/>
+        <rect x="68" y="100" width="64" height="52" rx="8" stroke="#eef2f6" stroke-width="5"/>
+        <path d="M80 100V82a20 20 0 0 1 40 0v18" stroke="#eef2f6" stroke-width="5"/>
+        <circle cx="100" cy="126" r="6" fill="#eef2f6"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section id="metodo">
+  <div class="wrap">
+    <h2>Come lavoriamo</h2>
+    <p class="sub">Si parte piccoli, e si vede subito se funziona.</p>
+    <div class="steps">
+      <div class="step"><div><b>Ascoltiamo</b><span>Una chiacchierata, senza gergo.</span></div></div>
+      <div class="step"><div><b>Valutiamo insieme</b><span>Consulenza breve sul tuo caso reale. I più semplici li chiudiamo subito.</span></div></div>
+      <div class="step"><div><b>Ti accompagniamo e ti formiamo</b><span>Impari con calma e sai cosa succede ai tuoi dati.</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Per chi</h2>
+    <div class="who" style="margin-top:14px">
+      <span>Studi professionali</span><span>Manager</span><span>PMI</span><span>Artigiani</span><span>Uffici</span><span>Enti pubblici</span>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap about">
+    <div>
+      <h2>Chi siamo</h2>
+      <p>Un piccolo team di sviluppo. Spieghiamo ogni passaggio e lasciamo il controllo a chi lavora.</p>
+    </div>
+    <div class="kniff-def"><b>Kniff</b> (tedesco): <i>il trucco del mestiere</i>, l'accorgimento che rende tutto più semplice. In inglese, <i>the knack</i>. In italiano, una dritta.</div>
+  </div>
+</section>
+
+<section id="contatti">
+  <div class="wrap">
+    <h2>Parliamone</h2>
+    <p class="sub">Preferisci scrivere direttamente? Lasciaci due righe, rispondiamo noi.</p>
+    <a class="btn js-form" href="#" target="_blank" rel="noopener">Contattaci</a>
+    <p class="sub" style="font-size:.85rem;margin:14px 0 0">Usiamo i dati che ci lasci solo per risponderti. Il sito non usa cookie né statistiche; il modulo di contatto è ospitato da Google e la chat è gestita da un servizio AI esterno.</p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 Kniff</div>
+    <div><a href="#">Privacy</a></div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var chat=document.getElementById('chat'), log=document.getElementById('log'),
+      chips=document.getElementById('chips'), form=document.getElementById('form'),
+      inp=document.getElementById('inp'), mic=document.getElementById('mic');
+
+  // Domande brevi dell'assessment, dopo il problema raccontato liberamente.
+  var Q=[
+    {k:'Lavoro',      t:'Che lavoro fai?',                       c:['Studio professionale','Artigiano','Azienda','Ente pubblico','Altro']},
+    {k:'Persone',     t:'Quante persone siete?',                 c:['Solo io','2–5','6–20','Più di 20']},
+    {k:'Uso AI',      t:'Usi già ChatGPT o simili?',             c:['Ogni giorno','Ogni tanto','Mai']},
+    {k:'Dati altrui', t:'Nei tuoi documenti ci sono dati di clienti o di altre persone?', c:['Sì','Forse','No']},
+    {k:'Timore',      t:'Cosa ti preoccupa di più?',             c:['I dati','Gli errori','I costi','Non so usarla','Niente']}
+  ];
+  var answers=[], step=-1, problem='';
+
+  // Link del modulo Google (da incollare qui). Finché è vuoto i bottoni non portano da nessuna parte.
+  var FORM_URL='https://docs.google.com/forms/d/e/1FAIpQLSdRXRDU6ctg38bFlIC9FLEoC4qrJmnH4jCkSD4Mnr1JE6oueQ/viewform';
+  document.querySelectorAll('.js-form').forEach(function(a){ a.href=FORM_URL||'#'; });
+
+  // Indirizzo del Worker che parla con l'AI (vedi server/GUIDA.md). Vuoto = solo percorso a domande fisse.
+  // Se il Worker non risponde (errore, credito finito), la chat passa da sola al percorso a domande fisse.
+  var API_URL='https://kniff-chat.kniff.workers.dev';
+  var llm=!!API_URL, hist=[], busy=false;
+  if(llm) document.getElementById('micnote').textContent='La chat usa un servizio AI esterno: non scrivere dati riservati. Il microfono usa il riconoscimento vocale del tuo browser.';
+
+  function callApi(){
+    return fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:hist})})
+      .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function(j){ if(!j||!j.reply) throw new Error('vuota'); return j.reply; });
+  }
+  function llmTurn(text){
+    hist.push({role:'user',content:text}); busy=true;
+    var wait=add('bot','…');
+    callApi().then(function(reply){
+      busy=false; log.removeChild(wait);
+      hist.push({role:'assistant',content:reply});
+      if(reply.indexOf('[FINE]')===0){
+        var lines=reply.replace('[FINE]','').split('\n').map(function(s){return s.replace(/^[-•*]\s*/,'').trim();}).filter(Boolean);
+        showSummary(lines,'Grazie! Ti rispondiamo noi.');
+      } else add('bot',reply);
+    }).catch(function(){
+      busy=false; log.removeChild(wait); llm=false;      // rete di sicurezza: domande fisse
+      problem=hist[0].content; step=0; answers=[];
+      bot('Facciamo con alcune domande veloci.',ask);
+    });
+  }
+
+  function add(cls,text){
+    var d=document.createElement('div'); d.className='msg '+cls; d.textContent=text;
+    log.appendChild(d); log.scrollTop=log.scrollHeight; return d;
+  }
+  function setChips(list){
+    chips.innerHTML='';
+    (list||[]).forEach(function(t){
+      var b=document.createElement('button'); b.type='button'; b.className='chip'; b.textContent=t;
+      b.onclick=function(){ submit(t); }; chips.appendChild(b);
+    });
+  }
+  function bot(text,after){ setTimeout(function(){ add('bot',text); if(after) after(); },450); }
+
+  function ask(){
+    var q=Q[step]; bot(q.t,function(){ setChips(q.c); });
+  }
+  function finish(){
+    var lines=['Problema: '+problem].concat(answers.map(function(a,i){return Q[i].k+': '+a;}));
+    var risk=(answers[3]==='Sì'||answers[3]==='Forse'||answers[4]==='I dati');
+    showSummary(lines,risk?'Hai dati da proteggere: partiamo da lì, con attenzione.':'Hai buone basi: possiamo partire da una cosa semplice.');
+  }
+  function showSummary(lines,closing){
+    setChips([]);
+    var d=document.createElement('div'); d.className='msg bot sum';
+    var h=document.createElement('div'); h.textContent='Grazie! Ecco cosa ho capito:'; d.appendChild(h);
+    var ul=document.createElement('ul'); lines.forEach(function(l){var li=document.createElement('li'); li.textContent=l; ul.appendChild(li);}); d.appendChild(ul);
+    var p=document.createElement('div');
+    p.textContent=closing;
+    d.appendChild(p);
+    var a=document.createElement('a'); a.className='btn'; a.style.cssText='display:inline-block;margin-top:10px;padding:9px 18px';
+    a.textContent='Copia il riepilogo e scrivici';
+    a.href=FORM_URL||'#'; a.target='_blank'; a.rel='noopener';
+    a.addEventListener('click',function(){
+      var t=lines.join('\n');
+      if(navigator.clipboard) navigator.clipboard.writeText(t).catch(function(){});
+    });
+    d.appendChild(a);
+    var n=document.createElement('div'); n.style.cssText='font-size:.8rem;color:var(--muted);margin-top:8px';
+    n.textContent='Il riepilogo viene copiato: incollalo nel messaggio del modulo. Per ora non è stato inviato nulla.'; d.appendChild(n);
+    setTimeout(function(){ log.appendChild(d); log.scrollTop=log.scrollHeight; },450);
+  }
+
+  function submit(text){
+    text=(text||'').trim(); if(!text||busy) return;
+    chat.classList.add('open');          // la pagina si allunga per far posto alla chat
+    add('me',text); inp.value=''; setChips([]);
+    if(llm){ llmTurn(text); return; }
+    if(step===-1){ problem=text; step=0; bot('Capito. Ti faccio 5 domande veloci.',ask); }
+    else { answers.push(text); step++; if(step<Q.length) ask(); else finish(); }
+  }
+  form.addEventListener('submit',function(e){ e.preventDefault(); submit(inp.value); });
+  chips.querySelectorAll('.chip').forEach(function(b){ b.onclick=function(){ submit(b.textContent); }; });
+
+  // Microfono (Web Speech API, se il browser la offre)
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition, rec=null;
+  mic.addEventListener('click',function(){
+    if(!SR){ chat.classList.add('open'); add('bot','Il microfono non è disponibile su questo browser. Puoi scrivere qui sotto.'); return; }
+    if(rec){ rec.stop(); return; }
+    rec=new SR(); rec.lang='it-IT'; rec.interimResults=true; rec.continuous=false;
+    rec.onstart=function(){ mic.classList.add('on'); inp.placeholder='Ti ascolto…'; };
+    rec.onresult=function(e){ var t=''; for(var i=0;i<e.results.length;i++) t+=e.results[i][0].transcript; inp.value=t; };
+    rec.onerror=function(){ };
+    rec.onend=function(){ mic.classList.remove('on'); inp.placeholder='Scrivi qui, oppure premi il microfono'; rec=null; if(inp.value.trim()) submit(inp.value); };
+    rec.start();
+  });
+})();
+</script>
+</body>
+</html>
