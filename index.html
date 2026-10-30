@@ -319,9 +319,19 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:10px 30px;justify-content:space-bet
         showSummary(lines,'Grazie! Ti rispondiamo noi.');
       } else add('bot',reply);
     }).catch(function(){
-      busy=false; log.removeChild(wait); llm=false;      // rete di sicurezza: domande fisse
-      problem=hist[0].content; step=0; answers=[];
-      bot('Facciamo con alcune domande veloci.',ask);
+      busy=false; log.removeChild(wait);
+      if(hist.length>1){
+        // l'AI aveva già risposto: non si ricomincia, si può riprovare o scrivere dal modulo
+        hist.pop();
+        var d=add('bot','Scusa, non sono riuscito a rispondere. Riprova tra un attimo, oppure ');
+        var l=document.createElement('a'); l.href=FORM_URL||'#'; l.target='_blank'; l.rel='noopener'; l.textContent='scrivici dal modulo';
+        d.appendChild(l); d.appendChild(document.createTextNode('.'));
+        log.scrollTop=log.scrollHeight;
+      } else {
+        // la prima chiamata non è andata a buon fine: rete di sicurezza con le domande fisse
+        llm=false; problem=hist[0].content; step=0; answers=[];
+        bot('Facciamo con alcune domande veloci.',ask);
+      }
     });
   }
 
