@@ -296,6 +296,9 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:10px 30px;justify-content:space-bet
   // Link del modulo Google (da incollare qui). Finché è vuoto i bottoni non portano da nessuna parte.
   var FORM_URL='https://docs.google.com/forms/d/e/1FAIpQLSdRXRDU6ctg38bFlIC9FLEoC4qrJmnH4jCkSD4Mnr1JE6oueQ/viewform';
   document.querySelectorAll('.js-form').forEach(function(a){ a.href=FORM_URL||'#'; });
+  // Apre il modulo con il campo "Cosa ti pesa nel lavoro?" già compilato (id del campo nel modulo)
+  var FORM_FIELD='entry.1220367683';
+  function formUrl(text){ return FORM_URL?FORM_URL+'?usp=pp_url&'+FORM_FIELD+'='+encodeURIComponent(text.slice(0,1800)):'#'; }
 
   // Indirizzo del Worker che parla con l'AI (vedi server/GUIDA.md). Vuoto = solo percorso a domande fisse.
   // Se il Worker non risponde (errore, credito finito), la chat passa da sola al percorso a domande fisse.
@@ -324,7 +327,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:10px 30px;justify-content:space-bet
         // l'AI aveva già risposto: non si ricomincia, si può riprovare o scrivere dal modulo
         hist.pop();
         var d=add('bot','Scusa, non sono riuscito a rispondere. Riprova tra un attimo, oppure ');
-        var l=document.createElement('a'); l.href=FORM_URL||'#'; l.target='_blank'; l.rel='noopener'; l.textContent='scrivici dal modulo';
+        var l=document.createElement('a'); l.href=formUrl(hist.filter(function(m){return m.role==='user';}).map(function(m){return m.content;}).join('\n')); l.target='_blank'; l.rel='noopener'; l.textContent='scrivici dal modulo';
         d.appendChild(l); d.appendChild(document.createTextNode('.'));
         log.scrollTop=log.scrollHeight;
       } else {
@@ -365,15 +368,15 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:10px 30px;justify-content:space-bet
     p.textContent=closing;
     d.appendChild(p);
     var a=document.createElement('a'); a.className='btn'; a.style.cssText='display:inline-block;margin-top:10px;padding:9px 18px';
-    a.textContent='Copia il riepilogo e scrivici';
-    a.href=FORM_URL||'#'; a.target='_blank'; a.rel='noopener';
+    a.textContent='Invia il riepilogo e lascia la tua email';
+    var t=lines.join('\n');
+    a.href=formUrl(t); a.target='_blank'; a.rel='noopener';
     a.addEventListener('click',function(){
-      var t=lines.join('\n');
-      if(navigator.clipboard) navigator.clipboard.writeText(t).catch(function(){});
+      if(navigator.clipboard) navigator.clipboard.writeText(t).catch(function(){});   // copia di scorta
     });
     d.appendChild(a);
     var n=document.createElement('div'); n.style.cssText='font-size:.8rem;color:var(--muted);margin-top:8px';
-    n.textContent='Il riepilogo viene copiato: incollalo nel messaggio del modulo. Per ora non è stato inviato nulla.'; d.appendChild(n);
+    n.textContent='Il modulo si apre già con il riepilogo: aggiungi la tua email e invia. Per ora non è stato inviato nulla.'; d.appendChild(n);
     setTimeout(function(){ log.appendChild(d); log.scrollTop=log.scrollHeight; },450);
   }
 
